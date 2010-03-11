@@ -1,4 +1,41 @@
-To launch lighttpd with this config in /root
-lighttpd -D -f /root/lighty.conf
+This is a simple hack to allow pfsense captive portal user creation,
+without requring hacks to the pfsense core itself, or admin / root 
+access to the pfsense box. Basically one just runs another small 
+lighttpd process (since everything is already setup and installed) 
+and access the $config variable found in /etc/inc/config.inc and
+write_config() function found in /etc/inc/functions.inc. The
+current incarnation of this tool generates 10 random user/pass
+combos and sets an expiry date, based on whatever day of the month
+it is 48 hours after creation. 
 
-Symlink ... ugh, battery dying, late, must sleep
+By visiting the prune.php page one can remove all accounts 
+that have expired, this can also be called by cron easily. 
+Please note there is a known bug where frequent calls to prune.php 
+are required until all accounts have been cleared up, I have no 
+idea why it's only doing a few accounts at a time, but for now repeat 
+until the string "Nothing to prune.\n" is found. 
+
+Please make sure to bind this to your STAFF interface, so that 
+only staff may generate accounts. 
+
+
+SETUP 
+
+Create a new directory for www files. 
+mkdir /var/www
+
+Copy files to new directory. 
+cp *.php /var/www/
+
+Edit lighty.conf to set bind address and port.
+vi lighty.conf
+
+Run lighttpd
+lighttpd -D -f lighty.conf
+
+Visit IP in lighty.conf default: http://10.0.0.254:90/
+To prune, prune manually from command line: php -f prune.php 
+or visit http://10.0.0.254:90/prune.php
+ 
+More instructions for setting up as daemon coming soon.
+
