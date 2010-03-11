@@ -1,0 +1,4 @@
+To launch lighttpd with this config in /root
+lighttpd -D -f /root/lighty.conf
+
+Symlink ... ugh, battery dying, late, must sleep
